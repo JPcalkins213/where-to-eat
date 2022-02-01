@@ -45,7 +45,7 @@ else:
         print(random.choice(asian))
     if random1 == "Mexican":
         print(random1)
-        mexican = ["Tio Tony's", "287 Tacos", "La Salsa Verde", "Taco Bell", "Taco Casa", "On the boarder", "El Fenix"]
+        mexican = ["Tio Tony's", "287 Tacos", "La Salsa Verde", "Taco Bell", "Taco Casa", "On the boarder", "El Fenix", "la tapitios", "Uncle Julios"]
         print(random.choice(mexican))
     if random1 == "Healthy":
         print(random1)
