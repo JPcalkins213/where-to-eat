@@ -4,11 +4,11 @@ import requests
 from config import gkey
 from pprint import pprint
 
-def get_restaurants(z):
+def get_restaurants(zc):
     rest_names = []
     rest_addys = []
     #here i am getting the latitude and the longitude for the #zipcode the user enters
-    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={z}&sensor=true&key={gkey}"
+    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={zc}&sensor=true&key={gkey}"
     response = requests.get(url).json()
     lat = response['results'][0]['geometry']['location']['lat']
     lng = response['results'][0]['geometry']['location']['lng']
