@@ -9,6 +9,13 @@ pIndex = x.index(place)
 addy = y[pIndex]
 print(place)
 print(addy)
+exist = funcs.existence(town)
+if exist == True:
+    quit()
+else:
+    dataframe = funcs.to_df(x,y,town)
+    pgadmin = funcs.to_pgadmin(dataframe)
+
 
 
 

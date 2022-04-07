@@ -1,6 +1,10 @@
 import config
 import string
 import requests
+import pandas as pd
+import numpy as np
+import psycopg2
+from sqlalchemy import create_engine
 from config import gkey
 from pprint import pprint
 
@@ -30,3 +34,32 @@ def get_zipcode():
         print("zip_code must be numbers only")
         zip_code=input('whats your zipcode? ')
     return zip_code
+
+
+def to_df(name, addy, zip_code):
+
+    zip_array = []
+    for x in range(len(name)):
+        zip_array.append(zip_code)
+    df = pd.DataFrame()
+    df['zip_code'] = zip_array
+    df['name'] = name
+    df['address'] = addy 
+    return df
+
+def to_pgadmin(df):
+    engine = create_engine('postgresql://postgres:postgres@localhost:5432/app_data')
+    df.to_sql('restaurants', engine, if_exists='append')
+
+#any engines i create once i get aws rds set up all engine links will need to change
+def existence(zc):
+    engine = create_engine('postgresql://postgres:postgres@localhost:5432/app_data')
+    data = engine.execute(
+        f"SELECT COUNT(*) FROM restaurants WHERE zip_code = '{zc}'"
+    )
+    zip_count = data.fetchone()[0]
+    print(zip_count)
+    if zip_count > 0:
+        return True
+    elif zip_count == 0:
+        return False
