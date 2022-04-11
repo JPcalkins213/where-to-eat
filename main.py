@@ -49,7 +49,18 @@ else:
 # def user_picks():
 #     print("how many places do you have in mind?")
 #     choice_ammount = input("enter here: ")
-#     ammount = int(choice_ammount)
+#     ammount = int(choice_ammount)insert you own[2]? ")
+# choice = input("1 or 2: ")
+# if choice == "2":
+#     user_picks()
+
+# else:
+#     print("Would you like to choose the category?")
+#     choice1 = input("yes or no: ")
+#     if choice1 == "yes":
+#         cat_pick()
+#     else:
+#         complete_random()
 #     x=1
 #     users_choices = list()
 #     while x<=ammount:
