@@ -13,8 +13,8 @@ exist = funcs.existence(town)
 if exist == True:
     quit()
 else:
-    dataframe = funcs.to_df(x,y,town)
-    pgadmin = funcs.to_pgadmin(dataframe)
+    dataframe = funcs.to_csv_s3(x,y,town)
+    # pgadmin = funcs.to_s3(dataframe, town)
 
 
 

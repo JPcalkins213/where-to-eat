@@ -3,9 +3,11 @@ import string
 import requests
 import pandas as pd
 import numpy as np
-import psycopg2
-from sqlalchemy import create_engine
-from config import gkey
+import boto3
+import io
+from io import StringIO
+from sqlalchemy import create_engine, text
+from config import gkey, db_endpoint, access_key_id, secret_access_key
 from pprint import pprint
 
 def get_restaurants(zc):
@@ -35,8 +37,8 @@ def get_zipcode():
         zip_code=input('whats your zipcode? ')
     return zip_code
 
-
-def to_df(name, addy, zip_code):
+#this will need to be changed to to_csv for aws s3 sake
+def to_csv_s3(name, addy, zip_code):
 
     zip_array = []
     for x in range(len(name)):
@@ -45,21 +47,44 @@ def to_df(name, addy, zip_code):
     df['zip_code'] = zip_array
     df['name'] = name
     df['address'] = addy 
-    return df
-
-def to_pgadmin(df):
-    engine = create_engine('postgresql://postgres:postgres@localhost:5432/app_data')
-    df.to_sql('restaurants', engine, if_exists='append')
-
-#any engines i create once i get aws rds set up all engine links will need to change
-def existence(zc):
-    engine = create_engine('postgresql://postgres:postgres@localhost:5432/app_data')
-    data = engine.execute(
-        f"SELECT COUNT(*) FROM restaurants WHERE zip_code = '{zc}'"
+    print(df)
+    bucket = 'jcalkins-source'
+    file_name = f'{zip_code}.csv'
+    s3_client = boto3.client(
+        "s3",
+        aws_access_key_id = access_key_id,
+        aws_secret_access_key = secret_access_key
     )
-    zip_count = data.fetchone()[0]
-    print(zip_count)
-    if zip_count > 0:
+    with io.StringIO() as buffer:
+        df.to_csv(buffer, index=False)
+        response = s3_client.put_object(
+            Bucket=bucket, Key=f'{zip_code}.csv', Body = buffer.getvalue()
+        )
+    status = response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+
+    if status == 200:
+        print(f"Successful S3 put_object response. Status - {status}")
+    else:
+        print(f"Unsuccessful S3 put_object response. Status - {status}")
+
+#THIS FUNCTION NEEDS TO BE MODIFIED TO SEND A CSV TO S3 BUCKET 
+# def to_s3(df, zc):
+#     s3 = boto3.client('s3')
+#     s3.upload_file(f"{zc}", "jcalkins-source", f"{df}")
+
+def existence(zc):
+    # engine = create_engine(f'postgresql://postgres:postgres@{db_endpoint}:5432/jcalkins-final-destination')
+    # data = engine.execute(
+    #     f"SELECT COUNT(*) FROM restaurants WHERE zip_code = '{zc}'"
+    # )
+    url = f"postgresql://postgres:postgres@{db_endpoint}:5432/postgres"
+    engine = create_engine(url)
+    connection = engine.connect()
+    query= """SELECT COUNT(*) FROM  restaurants WHERE CAST(zip_code AS int) = 76065 """
+    data = engine.execute(text(query)).fetchall()
+    print(data)
+    if data[0][0] > 0:
         return True
-    elif zip_count == 0:
+    elif data[0][0] == 0:
         return False
+    
