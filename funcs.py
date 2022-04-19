@@ -55,7 +55,7 @@ def to_csv_s3(name, addy, zip_code):
     df['zip_code'] = zip_array
     df['name'] = name
     df['address'] = addy 
-    print(df)
+    # print(df)
     bucket = 'jcalkins-source'
     file_name = f'{zip_code}.csv'
     s3_client = boto3.client(
@@ -68,12 +68,12 @@ def to_csv_s3(name, addy, zip_code):
         response = s3_client.put_object(
             Bucket=bucket, Key=f'{zip_code}.csv', Body = buffer.getvalue()
         )
-    status = response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+    # status = response.get("ResponseMetadata", {}).get("HTTPStatusCode")
 
-    if status == 200:
-        print(f"Successful S3 put_object response. Status - {status}")
-    else:
-        print(f"Unsuccessful S3 put_object response. Status - {status}")
+    # if status == 200:
+    #     print(f"Successful S3 put_object response. Status - {status}")
+    # else:
+    #     print(f"Unsuccessful S3 put_object response. Status - {status}")
 
 #this has been the trickest function so far. were checking the landing s3 bucket so see if the file name with the zipcode given exists. I cant count how many times ive had to change the process of this function alone
 def existence(zc):
