@@ -3,17 +3,38 @@ import funcs
 from funcs import *
 
 town = funcs.get_zipcode()
-x, y = funcs.get_restaurants(town)
-place = random.choice(x)
-pIndex = x.index(place)
-addy = y[pIndex]
-print(place)
-print(addy)
+
 exist = funcs.existence(town)
 if exist == True:
-    quit()
+    df = csv_to_df(town)
+    random_from_df(df)
 else:
+    x, y = funcs.get_restaurants(town)
+
+    place = random.choice(x)
+
+    pIndex = x.index(place)
+
+    addy = y[pIndex]
+
+    print(place)
+
+    print(addy)
     dataframe = funcs.to_csv_s3(x,y,town)
+
+# x, y = funcs.get_restaurants(town)
+
+# place = random.choice(x)
+
+# pIndex = x.index(place)
+
+# addy = y[pIndex]
+
+# print(place)
+
+# print(addy)
+### exist will need be moved farther up in the program so im not using google everytime
+
     # pgadmin = funcs.to_s3(dataframe, town)
 
 
