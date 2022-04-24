@@ -14,8 +14,6 @@ class testing_to_csv_s3(unittest.TestCase):
 
         if bucket.creation_date:
             result = print("The bucket exists")
-        else:
-            result = print("the bucket doesn't exist")
         self.assertEqual(result)
 
 
@@ -30,6 +28,6 @@ class testing_destination_bucket(unittest.TestCase):
 
         if bucket.creation_date:
             result = print("The bucket exists")
+            self.assertEqual(result)
         else:
-            result = print("the bucket doesn't exist")
-        self.assertEqual(result)
+            self.fail("could not reach destination bucket")
