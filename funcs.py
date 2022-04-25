@@ -119,3 +119,23 @@ def random_from_df(df):
     # elif data[0][0] == 0:
     #     return False
     
+# functions for category specific feature
+def get_category():
+    user_cat =input("What cotegory are we feeling today?: ")
+    return user_cat
+
+def get_category_restaurants(user_cat, zc):
+    rest_names = []
+    rest_addys = []
+    #here i am getting the latitude and the longitude for the #zipcode the user enters
+    url = f"https://maps.googleapis.com/maps/api/geocode/json?address={zc}&sensor=true&key={gkey}"
+    response = requests.get(url).json()
+    lat = response['results'][0]['geometry']['location']['lat']
+    lng = response['results'][0]['geometry']['location']['lng']
+    #with that info we can go ahead and grab the restaurants from #that zipcode within a 10 mile radius set to 16100 wich is a #little over 10 miles
+    search_url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=10500&keyword={user_cat}&key={gkey}"
+    search = requests.get(search_url).json()
+    for x in range(len(search['results'])-1):
+        rest_names.append(search['results'][x]['name'])
+        rest_addys.append(search['results'][x]['vicinity'])
+    return rest_names, rest_addys
