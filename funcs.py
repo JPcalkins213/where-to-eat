@@ -14,18 +14,19 @@ from botocore.errorfactory import ClientError
 from io import StringIO
 from sqlalchemy import create_engine, text
 from config import gkey, access_key_id, secret_access_key
+from config import gkey, dbendpoint
 from pprint import pprint
 
 #this is grabbing the restaurants from the zipcode we were given from the user. the zipcode is transformed into lat and long coordinates for the google api
 def get_restaurants(zc):
     rest_names = []
     rest_addys = []
-    #here i am getting the latitude and the longitude for the #zipcode the user enters
+    #here i am getting the latitude and the longitude for the zipcode the user enters
     url = f"https://maps.googleapis.com/maps/api/geocode/json?address={zc}&sensor=true&key={gkey}"
     response = requests.get(url).json()
     lat = response['results'][0]['geometry']['location']['lat']
     lng = response['results'][0]['geometry']['location']['lng']
-    #with that info we can go ahead and grab the restaurants from #that zipcode within a 10 mile radius set to 16100 wich is a #little over 10 miles
+    #with that info we can go ahead and grab the restaurants from that zipcode within a 10 mile radius set to 16100 meters wich is a little over 10 miles
     search_url = f"https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={lat},{lng}&radius=10500&keyword=food&key={gkey}"
     search = requests.get(search_url).json()
     for x in range(len(search['results'])-1):
@@ -68,12 +69,6 @@ def to_csv_s3(name, addy, zip_code):
         response = s3_client.put_object(
             Bucket=bucket, Key=f'{zip_code}.csv', Body = buffer.getvalue()
         )
-    # status = response.get("ResponseMetadata", {}).get("HTTPStatusCode")
-
-    # if status == 200:
-    #     print(f"Successful S3 put_object response. Status - {status}")
-    # else:
-    #     print(f"Unsuccessful S3 put_object response. Status - {status}")
 
 #this has been the trickest function so far. were checking the landing s3 bucket so see if the file name with the zipcode given exists. I cant count how many times ive had to change the process of this function alone
 def existence(zc):
@@ -102,22 +97,6 @@ def csv_to_df(zc):
 ### here we are using pandas to print a sample from the dataframe (a sample print only one random row from the dataframe)
 def random_from_df(df):
     pprint(df.sample())
-
-    ### for clarity; the code below is for the original way i planned for this application to be. originally it was to send the data i get into a csv and send that csv to aws rds. 
-    # engine = create_engine(f'postgresql://postgres:postgres@{db_endpoint}:5432/jcalkins-final-destination')
-    # data = engine.execute(
-    #     f"SELECT COUNT(*) FROM restaurants WHERE zip_code = '{zc}'"
-    # )
-    # url = f"postgresql://postgres:postgres@{db_endpoint}:5432/postgres"
-    # engine = create_engine(url)
-    # connection = engine.connect()
-    # query= """SELECT COUNT(*) FROM  restaurants WHERE CAST(zip_code AS int) = 76065 """
-    # data = engine.execute(text(query)).fetchall()
-    # print(data)
-    # if data[0][0] > 0:
-    #     return True
-    # elif data[0][0] == 0:
-    #     return False
     
 # functions for category specific feature
 def get_category():

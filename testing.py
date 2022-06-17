@@ -31,3 +31,11 @@ class testing_destination_bucket(unittest.TestCase):
             self.assertEqual(result)
         else:
             self.fail("could not reach destination bucket")
+
+
+# status = response.get("ResponseMetadata", {}).get("HTTPStatusCode")
+
+    # if status == 200:
+    #     print(f"Successful S3 put_object response. Status - {status}")
+    # else:
+    #     print(f"Unsuccessful S3 put_object response. Status - {status}")
