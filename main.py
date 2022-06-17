@@ -1,6 +1,10 @@
 import random
 import funcs
+import postgres_funcs
+import aws_funcs
 from funcs import *
+from postgres_funcs import *
+from aws_funcs import *
 
 town = funcs.get_zipcode()
 cat = input("would you like to choose a category? y or n: ")
@@ -18,9 +22,6 @@ if cat == "y":
 
     print(addy)
     dataframe = funcs.to_csv_s3(x,y,category)
-#needing to add category option
-#randomly choose from restaurants given by user
-# any other features list here
 else:
     exist = funcs.existence(town)
     if exist == True:
