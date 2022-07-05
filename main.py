@@ -34,23 +34,24 @@ else:
             user_place.append(input(f"place {x} : "))
             x+=1
         print(random.choice(user_place))
-    exist = postgres_funcs.checking_postgres_existence(town)
-    if exist == True:
-        df = csv_to_df(town)
-        random_from_df(df)
     else:
-        x, y = funcs.get_restaurants(town)
+        exist = postgres_funcs.checking_postgres_existence(town)
+        if exist == True:
+            df = csv_to_df(town)
+            random_from_df(df)
+        else:
+            x, y = funcs.get_restaurants(town)
 
-        place = random.choice(x)
+            place = random.choice(x)
 
-        pIndex = x.index(place)
+            pIndex = x.index(place)
 
-        addy = y[pIndex]
+            addy = y[pIndex]
 
-        print(place)
+            print(place)
 
-        print(addy)
-        dataframe = postgres_funcs.add_data_to_postgres(x,y,town)
+            print(addy)
+            dataframe = postgres_funcs.add_data_to_postgres(x,y,town)
 
     # x, y = funcs.get_restaurants(town)
 
