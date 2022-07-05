@@ -8,6 +8,7 @@ from aws_funcs import *
 
 town = funcs.get_zipcode()
 cat = input("would you like to choose a category? y or n: ")
+cat.lower()
 if cat == "y":
     category = funcs.get_category()
     category.lower()
@@ -21,9 +22,19 @@ if cat == "y":
     print(place)
 
     print(addy)
-    dataframe = funcs.to_csv_s3(x,y,category)
+    dataframe = postgres_funcs.add_data_to_postgres(x,y,category)
 else:
-    exist = funcs.existence(town)
+    user_idea_question = input("Do you have some places in mind? y/n : ")
+    user_idea_question.lower()
+    if user_idea_question == "y":
+        ammount = input("How many places do you have in mind? : ")
+        x=1
+        user_place = []
+        while x <= ammount:
+            user_place.append(input(f"place {x} : "))
+            x+=1
+        print(random.choice(user_place))
+    exist = postgres_funcs.checking_postgres_existence(town)
     if exist == True:
         df = csv_to_df(town)
         random_from_df(df)
@@ -39,7 +50,7 @@ else:
         print(place)
 
         print(addy)
-        dataframe = funcs.to_csv_s3(x,y,town)
+        dataframe = postgres_funcs.add_data_to_postgres(x,y,town)
 
     # x, y = funcs.get_restaurants(town)
 

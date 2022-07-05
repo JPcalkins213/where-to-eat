@@ -1,7 +1,9 @@
+import io
 from config import *
 import sqlalchemy
 from sqlalchemy import create_engine, text
 import pandas as pd
+import boto3
 
 #this is grabbing the datafram we made turning it to a csv and sending it to an s3 bucket where it will be cleaned
 def to_csv_s3(name, addy, zip_code):
